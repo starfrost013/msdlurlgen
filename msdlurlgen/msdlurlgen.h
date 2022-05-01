@@ -1,5 +1,7 @@
 #pragma once
+
 #include <iostream>
+using namespace std;
 
 // Msdlurlgen.h: Global defines for MSDLURLGEN
 
