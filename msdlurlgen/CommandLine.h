@@ -31,6 +31,11 @@ public:
 	char* File{};
 
 	/// <summary>
+	/// Determines if non-essential output will be suppressed.
+	/// </summary>
+	bool Quiet = false;
+
+	/// <summary>
 	/// Parses the command-line arguments.
 	/// </summary>
 	/// <param name="argc"></param>
@@ -42,9 +47,4 @@ public:
 	/// Shows the help message.
 	/// </summary>
 	static void ShowHelp();
-
-	/// <summary>
-	/// Prints the version information.
-	/// </summary>
-	static void PrintVersion();
 };

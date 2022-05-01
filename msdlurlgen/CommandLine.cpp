@@ -1,4 +1,7 @@
 #include "CommandLine.h"
+#include "msdlurlgen.h"
+#include <string>
+
 using namespace std;
 
 CommandLine* CommandLine::Parse(int argc, char* argv[])
@@ -11,53 +14,72 @@ CommandLine* CommandLine::Parse(int argc, char* argv[])
 	{
 		string curOption = argv[i];
 
-		if (argc - i > 1)
+		// convert every character in the string to lowercase to be case-insensitive
+		for (int i = 0; i < curOption.size(); i++) curOption[i] = tolower(curOption[i]);
+
+		if (argc - i > 0)
 		{
-			if (curOption == "-start")
+			// check for each option
+			if (curOption == "-start"
+				|| curOption == "-s")
 			{
 				char* tempString = argv[i + 1];
 
 				cmdLine.Start = atoi(tempString);
 			}
-			else if (curOption == "-end")
+			else if (curOption == "-end"
+				|| curOption == "-e")
 			{
 				char* tempString = argv[i + 1];
 
 				cmdLine.End = atoi(tempString);
 			}
-			else if (curOption == "-imagesize")
+			else if (curOption == "-imagesize"
+				|| curOption == "-i")
 			{
 				char* tempString = argv[i + 1];
 
 				cmdLine.ImageSize = tempString;
 			}
-			else if (curOption == "-filename")
+			else if (curOption == "-filename"
+				|| curOption == "-f")
 			{
 				char* tempString = argv[i + 1];
 
 				cmdLine.File = tempString;
 			}
+			else if (curOption == "-quiet"
+				|| curOption == "-q")
+			{
+				cmdLine.Quiet = true; 
+			}
 		}
 	}
 
-	// some final sanity checks
-
+	// Does some final sanity checks.
 	if (cmdLine.Start <= 0
-		|| cmdLine.End <= 0)
+		|| cmdLine.End <= 0) // make sure we have valid unix time values
 	{
-		cout << "Invalid start or end parameter (must be positive)!" << endl;
+		cout << "Invalid -start or -end parameter (must be positive)!" << endl;
 		return nullptr;
 	}
 
-	if (strlen(cmdLine.ImageSize) == 0)
+	if (cmdLine.End < cmdLine.Start) // flip end and start if the user accidentally provided them the wrong way around
 	{
-		cout << "Invalid ImageSize parameter!" << endl;
+		int tStart = cmdLine.Start;
+		cmdLine.Start = cmdLine.End;
+		cmdLine.End = tStart;
+	}
+
+	if (strlen(cmdLine.ImageSize) == 0) // make sure the imagesize was provided
+	{
+		cout << "Invalid -imagesize parameter!" << endl;
 		return nullptr; 
 	}
 
-	if (strlen(cmdLine.File) == 0)
+	if (strlen(cmdLine.File) == 0) // make sure the file was provided.
 	{
-		cout << "Invalid File parameter!" << endl;
+		cout << "Invalid -file parameter!" << endl;
 		return nullptr;
 	}
 
@@ -72,18 +94,13 @@ void CommandLine::ShowHelp()
 	PrintVersion();
 	cout << "Generates Microsoft Symbol Server request URLs" << endl << endl; // two newlines for S T Y L E 
 
-	cout << "msdlurlgen -start [begin] -end [end] -imagesize [image size] -filename [filename] " << endl;
-	cout << "-start (decimal Unix TimeStamp value to start with)" << endl;
-	cout << "-end (decimal Unix TimeStamp value to end at)" << endl;
-	cout << "-imagesize (hex-format PE SizeOfImage to use)" << endl;
-	cout << "-filename (filename to check for)" << endl;
+	cout << "msdlurlgen -start [begin] -end [end] -imagesize [image size] -filename [filename] [args...]" << endl << endl;
+	cout << "Required parameters:" << endl;
+	cout << "-start [-s] (decimal Unix TimeStamp value to start with)" << endl;
+	cout << "-end [-e] (decimal Unix TimeStamp value to end at)" << endl;
+	cout << "-imagesize [-i] (hex-format PE SizeOfImage to use)" << endl;
+	cout << "-filename [-f] (filename to check for)" << endl << endl; 
+	cout << "Optional parameters:" << endl;
+	cout << "-quiet [-q]: Suppress version output" << endl;
 }
 
-void CommandLine::PrintVersion()
-{
-	cout << "msdlurlgen Version ";
-	cout << VERSION_MAJOR
-	cout << "." << VERSION_MINOR;
-	cout << "." << VERSION_REVISION;
-	cout << " © 2022 starfrost" << endl;
-}
