@@ -38,10 +38,10 @@ public:
 	/// <summary>
 	/// Parses the command-line arguments.
 	/// </summary>
-	/// <param name="argc"></param>
-	/// <param name="argv"></param>
+	/// <param name="argc">The number of arguments passed.</param>
+	/// <param name="argv">The arguments themselves</param>
 	/// <returns>A pointer to a CommandLine containing the </returns>
-	static CommandLine* Parse(int argc, char* argv[]);
+	static CommandLine* Parse(int argCount, char* args[]);
 
 	/// <summary>
 	/// Shows the help message.

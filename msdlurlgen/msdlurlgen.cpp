@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include "CommandLine.h"
+
 using namespace std;
 
 void GenUrl(CommandLine args);
@@ -55,4 +56,13 @@ void GenUrl(CommandLine args)
     }
 
     /* END BAD CODE */
+}
+
+void PrintVersion()
+{
+    cout << "msdlurlgen version ";
+    cout << VERSION_MAJOR;
+    cout << "." << VERSION_MINOR;
+    cout << "." << VERSION_REVISION;
+    cout << endl << "© 2022 starfrost" << endl;
 }
