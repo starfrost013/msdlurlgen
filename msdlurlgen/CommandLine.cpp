@@ -3,47 +3,51 @@
 
 using namespace std;
 
-CommandLine* CommandLine::Parse(int argc, char* argv[])
+CommandLine* CommandLine::Parse(int argCount, char* args[])
 {
 	auto cmdLine = CommandLine();
 
-	if (argc < 9) return nullptr;
-
-	for (int i = 0; i < argc; i++)
+	if (argCount < 9)
 	{
-		string curOption = argv[i];
+		ReportError("Some required parameters are missing!");
+		return nullptr;
+	}
+
+	for (int i = 0; i < argCount; i++)
+	{
+		string curOption = args[i];
 
 		// convert every character in the string to lowercase to be case-insensitive
 		for (int i = 0; i < curOption.size(); i++) curOption[i] = tolower(curOption[i]);
 
-		if (argc - i > 0)
+		if (argCount - i > 0)
 		{
 			// check for each option
 			if (curOption == "-start"
 				|| curOption == "-s")
 			{
-				char* tempString = argv[i + 1];
+				char* tempString = args[i + 1];
 
 				cmdLine.Start = atoi(tempString);
 			}
 			else if (curOption == "-end"
 				|| curOption == "-e")
 			{
-				char* tempString = argv[i + 1];
+				char* tempString = args[i + 1];
 
 				cmdLine.End = atoi(tempString);
 			}
 			else if (curOption == "-imagesize"
 				|| curOption == "-i")
 			{
-				char* tempString = argv[i + 1];
+				char* tempString = args[i + 1];
 
 				cmdLine.ImageSize = tempString;
 			}
 			else if (curOption == "-filename"
 				|| curOption == "-f")
 			{
-				char* tempString = argv[i + 1];
+				char* tempString = args[i + 1];
 
 				cmdLine.File = tempString;
 			}
@@ -52,6 +56,11 @@ CommandLine* CommandLine::Parse(int argc, char* argv[])
 			{
 				cmdLine.Quiet = true; 
 			}
+			else if (curOption == "-outfile"
+				|| curOption == "-o")
+			{
+				cmdLine.OutFile = args[i + 1];
+			}
 		}
 	}
 
@@ -59,7 +68,7 @@ CommandLine* CommandLine::Parse(int argc, char* argv[])
 	if (cmdLine.Start <= 0
 		|| cmdLine.End <= 0) // make sure we have valid unix time values
 	{
-		cout << "Invalid -start or -end parameter (must be positive)!" << endl;
+		ReportError("Invalid -start or -end parameter (must be positive)!");
 		return nullptr;
 	}
 
@@ -72,13 +81,13 @@ CommandLine* CommandLine::Parse(int argc, char* argv[])
 
 	if (strlen(cmdLine.ImageSize) == 0) // make sure the imagesize was provided
 	{
-		cout << "Invalid -imagesize parameter!" << endl;
+		ReportError("Invalid -imagesize parameter!");
 		return nullptr; 
 	}
 
 	if (strlen(cmdLine.File) == 0) // make sure the file was provided.
 	{
-		cout << "Invalid -file parameter!" << endl;
+		ReportError("Invalid -file parameter!");
 		return nullptr;
 	}
 
@@ -94,12 +103,13 @@ void CommandLine::ShowHelp()
 	cout << "Generates Microsoft Symbol Server request URLs" << endl << endl; // two newlines for S T Y L E 
 
 	cout << "msdlurlgen -start [begin] -end [end] -imagesize [image size] -filename [filename] [args...]" << endl << endl;
-	cout << "Required parameters:" << endl;
+	cout << "\x1b[32mRequired parameters:\x1b[37m" << endl;
 	cout << "-start [-s] (decimal Unix TimeStamp value to start with)" << endl;
 	cout << "-end [-e] (decimal Unix TimeStamp value to end at)" << endl;
 	cout << "-imagesize [-i] (hex-format PE SizeOfImage to use)" << endl;
 	cout << "-filename [-f] (filename to check for)" << endl << endl; 
-	cout << "Optional parameters:" << endl;
+	cout << "\x1b[32mOptional parameters:\x1b[37m" << endl;
 	cout << "-quiet [-q]: Suppress version output" << endl;
+	cout << "-outfile [-o]: File to output to (will output to console if not set)" << endl;
 }
 

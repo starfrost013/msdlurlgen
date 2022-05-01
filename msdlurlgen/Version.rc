@@ -73,7 +73,7 @@ BEGIN
             VALUE "InternalName", "msdlurlg.exe"
             VALUE "LegalCopyright", "Copyright © 2022 starfrost"
             VALUE "OriginalFilename", "msdlurlg.exe"
-            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductName", "MSDL URL generator"
             VALUE "ProductVersion", "2.2.0.0"
         END
     END

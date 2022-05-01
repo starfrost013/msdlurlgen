@@ -1,18 +1,23 @@
-// msdlurlgen.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// msdlurlgen
+// A tool for generating MSDL URLs
+// 
 // TODO:
-// COUT manipulators instead of printf_s()
 // Saving the file and loading it
 // Some refactoring (probably put the generator in a class)
 // Not for release, unless you want symsrv to get BTFO'd. 
 // Still kind of a bodge due to my "not that much" knowledge of C/C++ but i wanted to challenge myself.
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "CommandLine.h"
 
 using namespace std;
 
+// Global function prototypes.
 void GenUrl(CommandLine args);
+void GenUrl_WriteToFile(CommandLine args);
+void GenUrl_WriteToConsole(CommandLine args);
 
 int main(int argCount, char* args[])
 {
@@ -25,7 +30,16 @@ int main(int argCount, char* args[])
     }
     else
     {
-        GenUrl(*parsedArgs); // dereference
+        try
+        {
+            GenUrl(*parsedArgs); // dereference
+        }
+        catch (exception ex)
+        {
+            string error_string = "An error occurred writing the file! ";
+            error_string.append(ex.what());
+            ReportError(error_string);
+        }
     }
 }
 
@@ -42,27 +56,63 @@ void GenUrl(CommandLine args)
         cout << endl << "URL generation in progress..." << endl << endl;
     }
 
+    if (args.OutFile != nullptr)
+    {
+        GenUrl_WriteToFile(args);
+    }
+    else
+    {
+        GenUrl_WriteToConsole(args);
+    }
+
+}
+
+void GenUrl_WriteToFile(CommandLine args)
+{
+    fstream fileStream;
+
+    fileStream.open(args.OutFile, ios_base::in | ios_base::out | ios_base::trunc);
+    fileStream << hex;
+
     int startTime = args.Start;
     int endTime = args.End;
     char* imageSize = args.ImageSize; // In decimal. It should be padded to at least 0x1000 if you want to have hope
     char* fileName = args.File;
 
-    /* BAD CODE! printf is terrible and bad */
-    /* Todo: use cout modifiers for this */
+    for (int i = startTime; i <= endTime; i++)
+    {
+        fileStream << hex << "Invoke-WebRequest \"https://msdl.microsoft.com/download/symbols/" << fileName << "/" << i << imageSize << "/" << fileName << endl;
+    }
+
+    fileStream.close();
+
+    cout << "\x1b[32mDone! Written to: \x1b[37m" << args.OutFile;
+}
+
+void GenUrl_WriteToConsole(CommandLine args)
+{
+    cout << hex;
+    int startTime = args.Start;
+    int endTime = args.End;
+    char* imageSize = args.ImageSize; // In decimal. It should be padded to at least 0x1000 if you want to have hope
+    char* fileName = args.File;
 
     for (int i = startTime; i <= endTime; i++)
     {
-        printf_s("Invoke-WebRequest \"https://msdl.microsoft.com/download/symbols/%s/%0x%s/%s\" -OutFile \"%s\"\n", fileName, i, imageSize, fileName, fileName);
+        cout << hex << "Invoke-WebRequest \"https://msdl.microsoft.com/download/symbols/" << fileName << "/" << i << imageSize << "/" << fileName << endl;
     }
-
-    /* END BAD CODE */
 }
 
 void PrintVersion()
 {
-    cout << "msdlurlgen version ";
+    cout << "\x1b[32m" << "msdlurlgen\x1b[37m version ";
     cout << VERSION_MAJOR;
     cout << "." << VERSION_MINOR;
     cout << "." << VERSION_REVISION;
     cout << endl << "© 2022 starfrost" << endl;
+}
+
+void ReportError(string errorString)
+{
+    cout << "\x1b[31mError: \x1b[37m" << errorString << endl << endl;
 }

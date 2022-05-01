@@ -36,10 +36,15 @@ public:
 	bool Quiet = false;
 
 	/// <summary>
+	/// The filename to output the list of files to.
+	/// </summary>
+	char* OutFile = nullptr;
+
+	/// <summary>
 	/// Parses the command-line arguments.
 	/// </summary>
-	/// <param name="argc">The number of arguments passed.</param>
-	/// <param name="argv">The arguments themselves</param>
+	/// <param name="argCount">The number of arguments passed.</param>
+	/// <param name="args">The arguments that have been passed to msdlurlgen</param>
 	/// <returns>A pointer to a CommandLine containing the </returns>
 	static CommandLine* Parse(int argCount, char* args[]);
 
