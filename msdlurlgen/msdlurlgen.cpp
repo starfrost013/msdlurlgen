@@ -37,7 +37,7 @@ void GenUrl(CommandLine args)
     
     if (!args.Quiet)
     {
-        CommandLine::PrintVersion();
+        PrintVersion();
         cout << endl << "URL generation in progress..." << endl << endl;
     }
 
