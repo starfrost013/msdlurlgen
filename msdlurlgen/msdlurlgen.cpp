@@ -54,7 +54,6 @@ void GenUrl(CommandLine args)
     {
         PrintVersion();
         cout << endl << "URL generation in progress..." << endl << endl;
-        cout << "\x1b[31m\x1b[37mWARNING: " << "I am not responsible for any negative consequences incurred from sending tens of thousands of requests to the Microsoft symbol server." << endl;
     }
 
     if (args.OutFile != nullptr)
@@ -111,6 +110,8 @@ void PrintVersion()
     cout << "." << VERSION_MINOR;
     cout << "." << VERSION_REVISION;
     cout << endl << "© 2022 starfrost" << endl;
+    cout << "Generates Microsoft Symbol Server request URLs" << endl; // two newlines for S T Y L E 
+    cout << "\x1b[33mWARNING:\x1b[37m " << "I am not responsible for consequences incurred from spam requesting the symbol server. Use responsibly!" << endl << endl;
 }
 
 void ReportError(string errorString)

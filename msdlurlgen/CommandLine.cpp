@@ -100,7 +100,6 @@ CommandLine* CommandLine::Parse(int argCount, char* args[])
 void CommandLine::ShowHelp()
 {
 	PrintVersion();
-	cout << "Generates Microsoft Symbol Server request URLs" << endl << endl; // two newlines for S T Y L E 
 
 	cout << "msdlurlgen -start [begin] -end [end] -imagesize [image size] -filename [filename] [args...]" << endl << endl;
 	cout << "\x1b[32mRequired parameters:\x1b[37m" << endl;
