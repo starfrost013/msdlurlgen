@@ -54,6 +54,7 @@ void GenUrl(CommandLine args)
     {
         PrintVersion();
         cout << endl << "URL generation in progress..." << endl << endl;
+        cout << "\x1b[31m\x1b[37mWARNING: " << "I am not responsible for any negative consequences incurred from sending tens of thousands of requests to the Microsoft symbol server." << endl;
     }
 
     if (args.OutFile != nullptr)
