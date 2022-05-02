@@ -103,10 +103,10 @@ void CommandLine::ShowHelp()
 
 	cout << "msdlurlgen -start [begin] -end [end] -imagesize [image size] -filename [filename] [args...]" << endl << endl;
 	cout << "\x1b[32mRequired parameters:\x1b[37m" << endl;
-	cout << "-start [-s] (decimal Unix TimeStamp value to start with)" << endl;
-	cout << "-end [-e] (decimal Unix TimeStamp value to end at)" << endl;
-	cout << "-imagesize [-i] (hex-format PE SizeOfImage to use)" << endl;
-	cout << "-filename [-f] (filename to check for)" << endl << endl; 
+	cout << "-start [-s]: decimal Unix TimeStamp value to start with" << endl;
+	cout << "-end [-e]: decimal Unix TimeStamp value to end at" << endl;
+	cout << "-imagesize [-i]: hex-format PE SizeOfImage to use" << endl;
+	cout << "-filename [-f]: The filename you wish to check for" << endl << endl; 
 	cout << "\x1b[32mOptional parameters:\x1b[37m" << endl;
 	cout << "-quiet [-q]: Suppress version output" << endl;
 	cout << "-outfile [-o]: File to output to (will output to console if not set)" << endl;

@@ -53,7 +53,7 @@ void GenUrl(CommandLine args)
     if (!args.Quiet)
     {
         PrintVersion();
-        cout << endl << "URL generation in progress..." << endl << endl;
+        cout << endl << "URL generation in progress..." << endl;
     }
 
     if (args.OutFile != nullptr)
@@ -64,7 +64,6 @@ void GenUrl(CommandLine args)
     {
         GenUrl_WriteToConsole(args);
     }
-
 }
 
 void GenUrl_WriteToFile(CommandLine args)
@@ -81,7 +80,8 @@ void GenUrl_WriteToFile(CommandLine args)
 
     for (int i = startTime; i <= endTime; i++)
     {
-        fileStream << hex << "Invoke-WebRequest \"https://msdl.microsoft.com/download/symbols/" << fileName << "/" << i << imageSize << "/" << fileName << endl;
+        fileStream << hex << "Invoke-WebRequest \"https://msdl.microsoft.com/download/symbols/" << fileName << "/" << i << imageSize << "/" << fileName << "\"";
+        fileStream << "-OutFile " << fileName << endl;
     }
 
     fileStream.close();
@@ -99,7 +99,8 @@ void GenUrl_WriteToConsole(CommandLine args)
 
     for (int i = startTime; i <= endTime; i++)
     {
-        cout << hex << "Invoke-WebRequest \"https://msdl.microsoft.com/download/symbols/" << fileName << "/" << i << imageSize << "/" << fileName << endl;
+        cout << hex << "Invoke-WebRequest \"https://msdl.microsoft.com/download/symbols/" << fileName << "/" << i << imageSize << "/" << fileName << "\"";
+        cout << " -OutFile " << fileName << endl;
     }
 }
 
