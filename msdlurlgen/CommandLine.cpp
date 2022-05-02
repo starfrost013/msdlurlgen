@@ -61,6 +61,16 @@ CommandLine* CommandLine::Parse(int argCount, char* args[])
 			{
 				cmdLine.OutFile = args[i + 1];
 			}
+			else if (curOption == "-dontrun"
+				|| curOption == "-d")
+			{
+				cmdLine.DontRun = true; 
+			}
+			else if (curOption == "-forceexecutionpolicy"
+				|| curOption == "-fe")
+			{
+				cmdLine.ForceExecutionPolicy = true; 
+			}
 		}
 	}
 
@@ -110,5 +120,10 @@ void CommandLine::ShowHelp()
 	cout << "\x1b[32mOptional parameters:\x1b[37m" << endl;
 	cout << "-quiet [-q]: Suppress version output" << endl;
 	cout << "-outfile [-o]: File to output to (will output to console if not set)" << endl;
+	cout << "-dontrun [-d]: Don't try and run the file. " << endl;
+	cout << "-forceexecutionpolicy [-fe]: Try to set the execution policy of PowerShell before running." << endl;
+	cout << "\x1b[33mWarning:\x1b[37m Your PowerShell ExecutionPolicy must be set to \"Unrestricted\"";
+	cout << "in order to run the file after generation, you can run msdlurlgen with -forceexecutionpolicy in ordert to try and set it to Unrestricted, ";
+	cout << "but it, and the download process, will fail if you are not running as administrator. If you need to set your ExecutionPolicy, run this app as administrator." << endl;
 }
 

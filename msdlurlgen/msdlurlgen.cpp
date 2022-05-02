@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <Shlwapi.h>
 #include "CommandLine.h"
 
 using namespace std;
@@ -18,6 +19,7 @@ using namespace std;
 void GenUrl(CommandLine args);
 void GenUrl_WriteToFile(CommandLine args);
 void GenUrl_WriteToConsole(CommandLine args);
+void GenUrl_TryRunPs1(CommandLine args);
 
 int main(int argCount, char* args[])
 {
@@ -36,7 +38,7 @@ int main(int argCount, char* args[])
         }
         catch (exception ex)
         {
-            string error_string = "An error occurred writing the file! ";
+            string error_string = "An error occurred while writing the file! Error:\n\n";
             error_string.append(ex.what());
             ReportError(error_string);
         }
@@ -53,7 +55,7 @@ void GenUrl(CommandLine args)
     if (!args.Quiet)
     {
         PrintVersion();
-        cout << endl << "URL generation in progress..." << endl;
+        cout << endl << "Generating URLs..." << endl;
     }
 
     if (args.OutFile != nullptr)
@@ -77,6 +79,7 @@ void GenUrl_WriteToFile(CommandLine args)
     int endTime = args.End;
     char* imageSize = args.ImageSize; // In decimal. It should be padded to at least 0x1000 if you want to have hope
     char* fileName = args.File;
+    char* outFile = args.OutFile;
 
     for (int i = startTime; i <= endTime; i++)
     {
@@ -86,7 +89,60 @@ void GenUrl_WriteToFile(CommandLine args)
 
     fileStream.close();
 
-    cout << "\x1b[32mDone! Written to: \x1b[37m" << args.OutFile;
+    if (!args.DontRun)
+    {
+        GenUrl_TryRunPs1(args);
+    }
+
+    cout << "\x1b[32mDone! Written to: \x1b[37m" << outFile;
+}
+
+/// <summary>
+/// Try to run the powershell script we have produced.
+/// </summary>
+/// <param name="args">The CommandLine instance containing the command-line arguments passed to the application.</param>
+void GenUrl_TryRunPs1(CommandLine args)
+{
+    char* outFile = args.OutFile;
+
+    // Try to set execution policy. 
+    uint32_t execPolicyResult = -1;
+    uint32_t cmdResult = -1;
+
+    if (args.ForceExecutionPolicy)
+    {
+        if (!args.Quiet) cout << endl << "Trying to set execution policy..." << endl;
+        execPolicyResult = (uint32_t)ShellExecuteA(NULL, "open", "powershell.exe", "-Command Set-ExecutionPolicy Unrestricted -Force", NULL, SW_HIDE);
+
+        if (execPolicyResult < 32)
+        {
+            string errString = "Failed to set execution policy! ShellExecuteA returned: ";
+            errString.append(to_string(execPolicyResult));
+
+            ReportError(errString);
+        }
+    }
+
+    if (!args.Quiet) cout << "Running PowerShell script..." << endl;
+
+    // build an std::string containing our parameters
+    string psOutFile = "\".\\";
+    psOutFile.append(outFile);
+    psOutFile.append("\"");
+
+    cmdResult = (uint32_t)ShellExecuteA(NULL, "open", "powershell.exe", psOutFile.c_str(), NULL, SW_SHOW);
+
+    if (cmdResult > 32)
+    {
+        if (!args.Quiet) cout << "Successfully run PowerShell script!" << endl;
+    }
+    else
+    {
+        string errString = "Failed to run script! ShellExecuteA returned: ";
+        errString.append(to_string(cmdResult));
+
+        ReportError(errString);
+    }
 }
 
 void GenUrl_WriteToConsole(CommandLine args)
@@ -107,12 +163,12 @@ void GenUrl_WriteToConsole(CommandLine args)
 void PrintVersion()
 {
     cout << "\x1b[32m" << "msdlurlgen\x1b[37m version ";
-    cout << VERSION_MAJOR;
-    cout << "." << VERSION_MINOR;
-    cout << "." << VERSION_REVISION;
+    cout << MSDL_VERSION_MAJOR;
+    cout << "." << MSDL_VERSION_MINOR;
+    cout << "." << MSDL_VERSION_REVISION;
     cout << endl << "© 2022 starfrost" << endl;
     cout << "Generates Microsoft Symbol Server request URLs" << endl; // two newlines for S T Y L E 
-    cout << "\x1b[33mWARNING:\x1b[37m " << "I am not responsible for consequences incurred from spam requesting the symbol server. Use responsibly!" << endl << endl;
+    cout << "\x1b[33mWarning:\x1b[37m " << "I am not responsible for consequences incurred from spam requesting the symbol server. Use responsibly!" << endl;
 }
 
 void ReportError(string errorString)

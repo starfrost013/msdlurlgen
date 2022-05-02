@@ -41,6 +41,16 @@ public:
 	char* OutFile = nullptr;
 
 	/// <summary>
+	/// Determines if the PowerShell script is to be run or not.
+	/// </summary>
+	bool DontRun = false;
+
+	/// <summary>
+	/// Determines if the program will try and force execution policy.
+	/// </summary>
+	bool ForceExecutionPolicy = false;
+
+	/// <summary>
 	/// Parses the command-line arguments.
 	/// </summary>
 	/// <param name="argCount">The number of arguments passed.</param>
