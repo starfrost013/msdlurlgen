@@ -56,10 +56,13 @@ public:
 	/// <param name="argCount">The number of arguments passed.</param>
 	/// <param name="args">The arguments that have been passed to msdlurlgen</param>
 	/// <returns>A pointer to a CommandLine containing the </returns>
-	static CommandLine* Parse(int argCount, char* args[]);
+	static CommandLine Parse(int argCount, char* args[]);
 
 	/// <summary>
 	/// Shows the help message.
 	/// </summary>
 	static void ShowHelp();
+
+	bool FailedToParse = false;
+
 };

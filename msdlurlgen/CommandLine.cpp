@@ -3,14 +3,15 @@
 
 using namespace std;
 
-CommandLine* CommandLine::Parse(int argCount, char* args[])
+CommandLine CommandLine::Parse(int argCount, char* args[])
 {
 	auto cmdLine = CommandLine();
 
 	if (argCount < 9)
 	{
 		ReportError("Some required parameters are missing!");
-		return nullptr;
+		cmdLine.FailedToParse = true;
+		return cmdLine; 
 	}
 
 	for (int i = 0; i < argCount; i++)
@@ -79,7 +80,8 @@ CommandLine* CommandLine::Parse(int argCount, char* args[])
 		|| cmdLine.End <= 0) // make sure we have valid unix time values
 	{
 		ReportError("Invalid -start or -end parameter (must be positive)!");
-		return nullptr;
+		cmdLine.FailedToParse = true;
+		return cmdLine;
 	}
 
 	if (cmdLine.End < cmdLine.Start) // flip end and start if the user accidentally provided them the wrong way around
@@ -92,16 +94,18 @@ CommandLine* CommandLine::Parse(int argCount, char* args[])
 	if (strlen(cmdLine.ImageSize) == 0) // make sure the imagesize was provided
 	{
 		ReportError("Invalid -imagesize parameter!");
-		return nullptr; 
+		cmdLine.FailedToParse = true;
+		return cmdLine;
 	}
 
 	if (strlen(cmdLine.File) == 0) // make sure the file was provided.
 	{
 		ReportError("Invalid -file parameter!");
-		return nullptr;
+		cmdLine.FailedToParse = true;
+		return cmdLine;
 	}
 
-	return &cmdLine;
+	return cmdLine; 
 }
 
 /// <summary>
@@ -123,7 +127,7 @@ void CommandLine::ShowHelp()
 	cout << "-dontrun [-d]: Don't try and run the file. " << endl;
 	cout << "-forceexecutionpolicy [-fe]: Try to set the execution policy of PowerShell before running." << endl;
 	cout << "\x1b[33mWarning:\x1b[37m Your PowerShell ExecutionPolicy must be set to \"Unrestricted\"";
-	cout << "in order to run the file after generation, you can run msdlurlgen with -forceexecutionpolicy in ordert to try and set it to Unrestricted, ";
-	cout << "but it, and the download process, will fail if you are not running as administrator. If you need to set your ExecutionPolicy, run this app as administrator." << endl;
+	cout << " in order to run the file after generation. You can run msdlurlgen with -forceexecutionpolicy in ordert to try and set it to Unrestricted, ";
+	cout << "but it, and the download process, will fail if you are not running this tool as administrator. If you need to set your ExecutionPolicy, do it manually or run this app as administrator with the -forceexecutionpolicy option." << endl;
 }
 

@@ -9,7 +9,7 @@
 using namespace std;
 
 #define MSDL_VERSION_MAJOR 2;
-#define MSDL_VERSION_MINOR 5;
+#define MSDL_VERSION_MINOR 6;
 #define MSDL_VERSION_REVISION 0;
 
 void PrintVersion();

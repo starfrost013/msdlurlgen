@@ -1,8 +1,7 @@
-// msdlurlgen
+// msdlurlgen (Legacy C++ version)
 // A tool for generating MSDL URLs
 // 
 // TODO:
-// Saving the file and loading it
 // Some refactoring (probably put the generator in a class)
 // Not for release, unless you want symsrv to get BTFO'd. 
 // Still kind of a bodge due to my "not that much" knowledge of C/C++ but i wanted to challenge myself.
@@ -19,14 +18,14 @@ using namespace std;
 void GenUrl(CommandLine args);
 void GenUrl_WriteToFile(CommandLine args);
 void GenUrl_WriteToConsole(CommandLine args);
-void GenUrl_TryRunPs1(CommandLine args);
+bool GenUrl_TryRunPs1(CommandLine args);
 
 int main(int argCount, char* args[])
 {
     auto parsedArgs = CommandLine::Parse(argCount, args);
-
+    
     // We return a nullptr if an error occurred processing. So we just show the help and exit.
-    if (parsedArgs == nullptr)
+    if (parsedArgs.FailedToParse)
     {
         CommandLine::ShowHelp();
     }
@@ -34,7 +33,7 @@ int main(int argCount, char* args[])
     {
         try
         {
-            GenUrl(*parsedArgs); // dereference
+            GenUrl(parsedArgs); // dereference
         }
         catch (exception ex)
         {
@@ -91,17 +90,19 @@ void GenUrl_WriteToFile(CommandLine args)
 
     if (!args.DontRun)
     {
-        GenUrl_TryRunPs1(args);
+        if (GenUrl_TryRunPs1(args)) cout << "\x1b[32mRunning script at: \x1b[37m" << outFile << "...";
     }
-
-    cout << "\x1b[32mDone! Written to: \x1b[37m" << outFile;
+    else
+    {
+        cout << "\x1b[32mDone! Written to: \x1b[37m" << outFile;
+    }
 }
 
 /// <summary>
 /// Try to run the powershell script we have produced.
 /// </summary>
 /// <param name="args">The CommandLine instance containing the command-line arguments passed to the application.</param>
-void GenUrl_TryRunPs1(CommandLine args)
+bool GenUrl_TryRunPs1(CommandLine args)
 {
     char* outFile = args.OutFile;
 
@@ -120,6 +121,7 @@ void GenUrl_TryRunPs1(CommandLine args)
             errString.append(to_string(execPolicyResult));
 
             ReportError(errString);
+            return false; 
         }
     }
 
@@ -134,7 +136,7 @@ void GenUrl_TryRunPs1(CommandLine args)
 
     if (cmdResult > 32)
     {
-        if (!args.Quiet) cout << "Successfully run PowerShell script!" << endl;
+        return true;
     }
     else
     {
@@ -142,7 +144,10 @@ void GenUrl_TryRunPs1(CommandLine args)
         errString.append(to_string(cmdResult));
 
         ReportError(errString);
+        return false; 
     }
+
+    return false; 
 }
 
 void GenUrl_WriteToConsole(CommandLine args)
@@ -162,12 +167,14 @@ void GenUrl_WriteToConsole(CommandLine args)
 
 void PrintVersion()
 {
-    cout << "\x1b[32m" << "msdlurlgen\x1b[37m version ";
+    // Print out help.
+    cout << "\x1b[32m" << "msdlurlgen\x1b[37m Legacy version ";
     cout << MSDL_VERSION_MAJOR;
     cout << "." << MSDL_VERSION_MINOR;
     cout << "." << MSDL_VERSION_REVISION;
     cout << endl << "© 2022 starfrost" << endl;
-    cout << "Generates Microsoft Symbol Server request URLs" << endl; // two newlines for S T Y L E 
+    cout << "Generates Microsoft Symbol Server request URLs" << endl;
+    cout << "\x1b[31mUnsupported release!\x1b[37m Completely rewritten version 3.0 with new features coming soon!" << endl << endl;
     cout << "\x1b[33mWarning:\x1b[37m " << "I am not responsible for consequences incurred from spam requesting the symbol server. Use responsibly!" << endl;
 }
 
