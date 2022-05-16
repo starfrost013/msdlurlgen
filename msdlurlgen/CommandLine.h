@@ -18,12 +18,12 @@ public:
 	/// <summary>
 	/// The start of the range of the ImageFileDate you are looking for. Decimal unix time format.
 	/// </summary>
-	int Start{};
+	long Start{};
 
 	/// <summary>
 	/// The end of the range of the ImageFileDate you are looking for. Decimal unix time format.
 	/// </summary>
-	int End{};
+	long End{};
 
 	/// <summary>
 	/// The filename you are looking for.

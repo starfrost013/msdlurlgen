@@ -74,8 +74,8 @@ void GenUrl_WriteToFile(CommandLine args)
     fileStream.open(args.OutFile, ios_base::in | ios_base::out | ios_base::trunc);
     fileStream << hex;
 
-    int startTime = args.Start;
-    int endTime = args.End;
+    auto startTime = args.Start;
+    auto endTime = args.End;
     char* imageSize = args.ImageSize; // In decimal. It should be padded to at least 0x1000 if you want to have hope
     char* fileName = args.File;
     char* outFile = args.OutFile;
@@ -90,7 +90,7 @@ void GenUrl_WriteToFile(CommandLine args)
 
     if (!args.DontRun)
     {
-        if (GenUrl_TryRunPs1(args)) cout << "\x1b[32mRunning script at: \x1b[37m" << outFile << "...";
+        if (GenUrl_TryRunPs1(args)) cout << "\x1b[32mRunning script at: \x1b[37m" << outFile << "!";
     }
     else
     {
@@ -153,8 +153,8 @@ bool GenUrl_TryRunPs1(CommandLine args)
 void GenUrl_WriteToConsole(CommandLine args)
 {
     cout << hex;
-    int startTime = args.Start;
-    int endTime = args.End;
+    auto startTime = args.Start;
+    auto endTime = args.End;
     char* imageSize = args.ImageSize; // In decimal. It should be padded to at least 0x1000 if you want to have hope
     char* fileName = args.File;
 
@@ -174,7 +174,7 @@ void PrintVersion()
     cout << "." << MSDL_VERSION_REVISION;
     cout << endl << "© 2022 starfrost" << endl;
     cout << "Generates Microsoft Symbol Server request URLs" << endl;
-    cout << "\x1b[31mUnsupported release!\x1b[37m Completely rewritten version 3.0 with new features coming soon!" << endl << endl;
+    cout << "\x1b[31mDEPRECATED release! \x1b[32mSymX\x1b[37m version 3.0 with new features coming soon! \x1b[31mSupport will not be provided!\x1b[37m" << endl << endl;
     cout << "\x1b[33mWarning:\x1b[37m " << "I am not responsible for consequences incurred from spam requesting the symbol server. Use responsibly!" << endl;
 }
 

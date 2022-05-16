@@ -29,14 +29,14 @@ CommandLine CommandLine::Parse(int argCount, char* args[])
 			{
 				char* tempString = args[i + 1];
 
-				cmdLine.Start = atoi(tempString);
+				cmdLine.Start = atol(tempString);
 			}
 			else if (curOption == "-end"
 				|| curOption == "-e")
 			{
 				char* tempString = args[i + 1];
 
-				cmdLine.End = atoi(tempString);
+				cmdLine.End = atol(tempString);
 			}
 			else if (curOption == "-imagesize"
 				|| curOption == "-i")
@@ -86,7 +86,7 @@ CommandLine CommandLine::Parse(int argCount, char* args[])
 
 	if (cmdLine.End < cmdLine.Start) // flip end and start if the user accidentally provided them the wrong way around
 	{
-		int tStart = cmdLine.Start;
+		long tStart = cmdLine.Start;
 		cmdLine.Start = cmdLine.End;
 		cmdLine.End = tStart;
 	}
@@ -124,10 +124,10 @@ void CommandLine::ShowHelp()
 	cout << "\x1b[32mOptional parameters:\x1b[37m" << endl;
 	cout << "-quiet [-q]: Suppress version output" << endl;
 	cout << "-outfile [-o]: File to output to (will output to console if not set)" << endl;
-	cout << "-dontrun [-d]: Don't try and run the file. " << endl;
+	cout << "-dontrun [-d]: Don't try and run the file after generating. " << endl;
 	cout << "-forceexecutionpolicy [-fe]: Try to set the execution policy of PowerShell before running." << endl;
 	cout << "\x1b[33mWarning:\x1b[37m Your PowerShell ExecutionPolicy must be set to \"Unrestricted\"";
-	cout << " in order to run the file after generation. You can run msdlurlgen with -forceexecutionpolicy in ordert to try and set it to Unrestricted, ";
+	cout << " in order to run the file after generation. You can run msdlurlgen with -forceexecutionpolicy in order to try and set it to Unrestricted, ";
 	cout << "but it, and the download process, will fail if you are not running this tool as administrator. If you need to set your ExecutionPolicy, do it manually or run this app as administrator with the -forceexecutionpolicy option." << endl;
 }
 
